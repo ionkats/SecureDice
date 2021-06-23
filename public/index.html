@@ -1,0 +1,63 @@
+<html>
+
+<head>
+  <title>Express</title>
+  <link rel="stylesheet" href="/stylesheets/style.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.0.0/crypto-js.min.js"></script>
+</head>
+
+<body>
+  <h1>Express</h1>
+  <p>Welcome to Express</p>
+
+
+  <script>
+    let r1;
+    let s1;
+    let s2;
+
+    function clientInit() {
+      r1 = Math.floor(Math.random()*281474976710655);
+      s1 = CryptoJS.SHA256(""+r1);
+      callServerInitiate(s1);
+    }
+
+    async function callServerInitiate(s1) {
+      fetch(`/api/initiate?s1=${s1}`, {method: 'POST'})
+        .then(response => response.json())
+        .then(data => receiveS2(data.s2));
+
+      // const response = await fetch(`/api/initiate?s1=${s1}`);
+      // const data = await response.json();
+      // receiveS2(data.s2);
+    }
+
+    function callServerFinalize(r1) {
+      fetch(`/api/finalize?r1=${r1}`, {method: 'POST'})
+        .then(response => response.json())
+        .then(data => receiveR2(data.r2, data.serverDice))
+    }
+
+    function receiveS2(_s2) {
+      s2 = _s2
+      callServerFinalize(r1);
+    }
+
+    function receiveR2(r2, serverDice) {
+      const h = CryptoJS.SHA256(""+r2);
+      if (h==s2){
+        const temp1 = Math.floor(r1/256)
+        const temp2 = Math.floor(r2/256)
+        const userDice = (temp1 % 256 + temp2 % 256) % 6 + 1; 
+        alert("User dice = "+userDice+" Server dice = "+serverDice);
+      }else{
+        alert("Server not trustworthy.");
+      }
+    }
+
+    clientInit();
+
+  </script>
+</body>
+
+</html>
