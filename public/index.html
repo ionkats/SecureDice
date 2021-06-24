@@ -40,9 +40,18 @@
     let userDice = "-";
     let serverDice = "-";
 
+    function typedArrayToHex(typedArr) {
+      // https://stackoverflow.com/a/50767210
+      return Array.from(typedArr)
+        .map(b => b.toString(16).padStart(2, "0"))
+        .join("");
+    }
+    
     function clientInit() {
-      r1 = Math.floor(Math.random()*281474976710655);
-      s1 = CryptoJS.SHA256(""+r1);
+      const randomBytes = new Uint8Array(16);
+      crypto.getRandomValues(randomBytes);
+      r1 = typedArrayToHex(randomBytes) + Date.now();
+      s1 = CryptoJS.SHA256(r1);
       callServerInitiate(s1);
     }
 
@@ -68,12 +77,17 @@
     }
 
     function receiveR2(r2, _serverDice) {
-      const h = CryptoJS.SHA256(""+r2);
+      const h = CryptoJS.SHA256(r2);
       if (h==s2){
-        const temp1 = Math.floor(r1/256)
-        const temp2 = Math.floor(r2/256)
-        serverDice = _serverDice;
-        userDice = (temp1 % 256 + temp2 % 256) % 6 + 1; 
+        try {
+          // Add the second byte of r1 and r2 and get the dice of the server from them
+          const secondR1 = Number.parseInt(r1.substr(2, 2), 16);
+          const secondR2 = Number.parseInt(r2.substr(2, 2), 16);
+          serverDice = _serverDice;
+          userDice = (secondR1 + secondR2) % 6 + 1; 
+        } catch (_e) {
+          return alert("Received invalid parameter from server");
+        }
         // alert("User dice = "+userDice+" Server dice = "+serverDice);
         if (serverDice>userDice){
           winnerValue = "Server";
