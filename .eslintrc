@@ -8,5 +8,9 @@
     "es6": true,
     "browser": true
   },
-  "rules": {}
+  "rules": {
+    "no-console": "off",
+    "quotes": "off",
+    "no-mixed-operators": "off"
+  }
 }
