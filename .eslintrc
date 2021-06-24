@@ -12,5 +12,8 @@
     "no-console": "off",
     "quotes": "off",
     "no-mixed-operators": "off"
+  },
+  "globals": {
+    "CryptoJS": "readonly"
   }
 }
