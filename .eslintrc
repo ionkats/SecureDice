@@ -1,5 +1,8 @@
 {
   "extends": ["airbnb-base"],
+  "plugins": [
+    "html"
+  ],
   "env": {
     "node": true,
     "es6": true,
