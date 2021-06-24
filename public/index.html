@@ -1,20 +1,44 @@
 <html>
 
 <head>
-  <title>Express</title>
+  <title>Cryptographically secure dices</title>
   <link rel="stylesheet" href="/stylesheets/style.css">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.0.0/crypto-js.min.js"></script>
 </head>
 
 <body>
-  <h1>Express</h1>
-  <p>Welcome to Express</p>
+  <div class="main">
+    <h1 class="heading">Cryptographically Secure Dices</h1>
+    <div class="left-column">
+      <div class="values">
+        User's dice <div class="value" id="user"> - </div>
+        Server's dice <div class="value" id="server"> - </div>
+      </div> 
+    </div>
+    <div class="right-column">
+      <h3>Winner: </h3><div class="value" id="winner-value"> - </div>
+    </div>
+    <div class="play-game">
+        <button class="play btn" id="play-button">Play</button>
+      </div>
+    </div>
+    
+ 
 
 
   <script>
+    const playButton = document.getElementById("play-button");
+    
+    function addUiListener(){
+      playButton.addEventListener("click",clientInit);
+    }
+    addUiListener()
+
     let r1;
     let s1;
     let s2;
+    let userDice = "-";
+    let serverDice = "-";
 
     function clientInit() {
       r1 = Math.floor(Math.random()*281474976710655);
@@ -43,19 +67,31 @@
       callServerFinalize(r1);
     }
 
-    function receiveR2(r2, serverDice) {
+    function receiveR2(r2, _serverDice) {
       const h = CryptoJS.SHA256(""+r2);
       if (h==s2){
         const temp1 = Math.floor(r1/256)
         const temp2 = Math.floor(r2/256)
-        const userDice = (temp1 % 256 + temp2 % 256) % 6 + 1; 
-        alert("User dice = "+userDice+" Server dice = "+serverDice);
+        serverDice = _serverDice;
+        userDice = (temp1 % 256 + temp2 % 256) % 6 + 1; 
+        // alert("User dice = "+userDice+" Server dice = "+serverDice);
+        if (serverDice>userDice){
+          winnerValue = "Server";
+        }else if(serverDice<userDice){
+          winnerValue = "User";
+        }else{
+          winnerValue = "It's a tie";
+        }
+        document.getElementById("user").innerHTML = userDice;
+        document.getElementById("server").innerHTML = serverDice;
+        document.getElementById("winner-value").innerHTML = winnerValue;
       }else{
         alert("Server not trustworthy.");
       }
     }
 
-    clientInit();
+    
+
 
   </script>
 </body>
