@@ -7,7 +7,7 @@ function initiate(req, res) {
     req.app._r2 = r2;
     req.app._s1 = req.query.s1;
     const s2 = crypto.createHash('sha256').update(""+r2).digest('hex');
-    res.json({"s2": s2, s1: req.query.s1});
+    return res.json({"s2": s2, s1: req.query.s1});
 }
 
 function finalize(req, res) {
@@ -22,12 +22,12 @@ function finalize(req, res) {
             const firstR1 = Number.parseInt(r1.substr(0, 2), 16);
             const firstR2 = Number.parseInt(r2.substr(0, 2), 16);
             const serverDice = (firstR1 + firstR2) % 6 + 1; 
-            res.json({"r2": req.app._r2, "serverDice": serverDice});
+            return res.json({"r2": req.app._r2, "serverDice": serverDice});
         } catch (_e) {
-            res.status(400).json("Invalid parameter");
+            return res.status(400).json("Invalid parameter");
         }
     } else {
-        res.status(400).json("You are cheating");
+        return res.status(400).json("You are cheating");
     }
     
 }
