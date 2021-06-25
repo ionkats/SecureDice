@@ -83,7 +83,12 @@
           // Add the second byte of r1 and r2 and get the dice of the server from them
           const secondR1 = Number.parseInt(r1.substr(2, 2), 16);
           const secondR2 = Number.parseInt(r2.substr(2, 2), 16);
-          serverDice = _serverDice;
+          const firstR1 = Number.parseInt(r1.substr(0, 2), 16);
+          const firstR2 = Number.parseInt(r2.substr(0, 2), 16);
+          serverDice = (firstR1 + firstR2) % 6 + 1; 
+          if (serverDice!=_serverDice){
+            alert("Server not trustworthy.");
+          }
           userDice = (secondR1 + secondR2) % 6 + 1; 
         } catch (_e) {
           return alert("Received invalid parameter from server");
