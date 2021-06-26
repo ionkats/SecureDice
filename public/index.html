@@ -58,6 +58,7 @@
     }
     
     function clientInit() {
+      playButton.setAttribute("disabled", "disabled");
       const randomBytes = new Uint8Array(16);
       crypto.getRandomValues(randomBytes);
       r1 = typedArrayToHex(randomBytes) + Date.now();
@@ -125,6 +126,7 @@
       }else{
         alert("Server not trustworthy.");
       }
+      playButton.removeAttribute("disabled");
     }
 
     
