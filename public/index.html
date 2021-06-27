@@ -40,6 +40,7 @@
     }
     addUiListener()
 
+    let transactionUID;
     let r1;
     let s1;
     let s2;
@@ -69,7 +70,7 @@
     async function callServerInitiate(s1) {
       fetch(`/api/initiate?s1=${s1}`, {method: 'POST'})
         .then(response => response.json())
-        .then(data => receiveS2(data.s2));
+        .then(data => receiveInitData(data));
 
       // const response = await fetch(`/api/initiate?s1=${s1}`);
       // const data = await response.json();
@@ -77,13 +78,15 @@
     }
 
     function callServerFinalize(r1) {
-      fetch(`/api/finalize?r1=${r1}`, {method: 'POST'})
+      const finParams = new URLSearchParams({ r1, transactionUID });
+
+      fetch(`/api/finalize?${finParams}`, {method: 'POST'})
         .then(response => response.json())
         .then(data => receiveR2(data.r2, data.serverDice))
     }
 
-    function receiveS2(_s2) {
-      s2 = _s2
+    function receiveInitData(data) {
+      ({ s2, transactionUID } = data);
       callServerFinalize(r1);
     }
 
