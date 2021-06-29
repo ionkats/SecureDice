@@ -11,9 +11,14 @@
   "rules": {
     "no-console": "off",
     "quotes": "off",
-    "no-mixed-operators": "off"
+    "no-mixed-operators": "off",
+    "no-param-reassign": "off",
+    "no-underscore-dangle": "off",
+    "no-use-before-define": "off"
   },
   "globals": {
-    "CryptoJS": "readonly"
+    "CryptoJS": "readonly",
+    "getDice": "readonly",
+    "checkR": "readonly"
   }
 }
