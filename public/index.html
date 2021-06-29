@@ -29,24 +29,19 @@
       Total Games: <div class="counter" id="total"> - </div>
     </div>
   </div>
-    
-    
-
 
   <script>
     const playButton = document.getElementById("play-button");
     
-    function addUiListener(){
-      playButton.addEventListener("click",clientInit);
+    function addUiListener() {
+      playButton.addEventListener("click", clientInit);
     }
-    addUiListener()
+    addUiListener();
 
     let transactionUID;
     let r1;
     let s1;
     let s2;
-    let userDice = "-";
-    let serverDice = "-";
     let winCounterUser = 0;
     let winCounterServer = 0;
     let tieCounter = 0;
@@ -55,7 +50,7 @@
     function typedArrayToHex(typedArr) {
       // https://stackoverflow.com/a/50767210
       return Array.from(typedArr)
-        .map(b => b.toString(16).padStart(2, "0"))
+        .map((b) => b.toString(16).padStart(2, "0"))
         .join("");
     }
     
@@ -69,9 +64,9 @@
     }
 
     async function callServerInitiate(s1) {
-      fetch(`/api/initiate?s1=${s1}`, {method: 'POST'})
-        .then(response => response.json())
-        .then(data => receiveInitData(data));
+      fetch(`/api/initiate?s1=${s1}`, { method: 'POST' })
+        .then((response) => response.json())
+        .then((data) => receiveInitData(data));
 
       // const response = await fetch(`/api/initiate?s1=${s1}`);
       // const data = await response.json();
@@ -81,9 +76,9 @@
     function callServerFinalize(r1) {
       const finParams = new URLSearchParams({ r1, transactionUID });
 
-      fetch(`/api/finalize?${finParams}`, {method: 'POST'})
-        .then(response => response.json())
-        .then(data => receiveR2(data.r2, data.serverDice))
+      fetch(`/api/finalize?${finParams}`, { method: 'POST' })
+        .then((response) => response.json())
+        .then((data) => receiveR2(data.r2));
     }
 
     function receiveInitData(data) {
@@ -91,7 +86,8 @@
       callServerFinalize(r1);
     }
 
-    function receiveR2(r2, _serverDice) {
+    // eslint-disable-next-line consistent-return
+    function receiveR2(r2) {
       const h = CryptoJS.SHA256(r2).toString();
       if (!checkR(r2)) {
         return alert("Received invalid parameter from server");
@@ -99,19 +95,20 @@
       if (h !== s2) {
         return alert("Server not trustworthy.");
       }
-      
+    
       const serverDice = getDice(r1, r2, 2);
       const userDice = getDice(r1, r2, 1);
-      
-      if (serverDice>userDice){
+    
+      let winnerValue;
+      if (serverDice > userDice) {
         winnerValue = "Server";
-        winCounterServer +=1 ;
-      }else if(serverDice<userDice){
+        winCounterServer += 1;
+      } else if (serverDice < userDice) {
         winnerValue = "User";
         winCounterUser += 1;
-      }else{
+      } else {
         winnerValue = "It's a tie";
-        tieCounter +=1;
+        tieCounter += 1;
       }
       totalGames += 1;
       document.getElementById("user").innerHTML = userDice;
@@ -123,10 +120,6 @@
       document.getElementById("total").innerHTML = totalGames;
       playButton.removeAttribute("disabled");
     }
-
-    
-
-
   </script>
 </body>
 
